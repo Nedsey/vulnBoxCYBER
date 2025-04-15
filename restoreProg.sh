@@ -58,7 +58,7 @@ fi
 
 if [[ $CHAPTER -ge 3 ]]; then
   echo "[3] Installing PHP..."
-  sudo apt update -y && sudo apt install php libapache2-mod-php -y
+  sudo DEBIAN_FRONTEND=noninteractive apt update -y && sudo DEBIAN_FRONTEND=noninteractive apt install php libapache2-mod-php -yq
   sudo systemctl restart apache2
   sudo touch bouncer.php
 fi
