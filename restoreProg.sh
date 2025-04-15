@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Base64-encoded passwords
 pass1="ZmlyZQ=="
 pass2="bW9vbg=="
 pass3="dHJlZQ=="
@@ -8,15 +9,26 @@ pass5="Ym9vaw=="
 pass6="d2luZA=="
 
 echo "Enter the chapter number to recover (1-6):"
-read chapter
+read -r chapter
 
 verify_password() {
-  chapter_num=$1
-  encoded_pass=$2
+  chapter_num="$1"
+  encoded_pass="$2"
 
   echo "Enter the teacher passkey for Chapter $chapter_num:"
-  read -s input_pass
-  decoded_pass=$(echo "$encoded_pass" | base64 -d)
+  # read silently
+  read -r -s input_pass
+
+  decoded_pass=$(echo -n "$encoded_pass" | base64 --decode 2>/dev/null)
+
+  # Debug line: set DEBUG=1 before running the script if you want to see the decoded pass
+  if [ "$DEBUG" = "1" ]; then
+    echo
+    echo "[DEBUG] You typed: '$input_pass'"
+    echo "[DEBUG] Decoded pass: '$decoded_pass'"
+  fi
+
+  echo
 
   if [ "$input_pass" != "$decoded_pass" ]; then
     echo "Incorrect passkey. Exiting."
@@ -27,7 +39,7 @@ verify_password() {
 if [ "$chapter" -ge 1 ]; then
   verify_password 1 "$pass1"
   sudo systemctl start apache2
-  cd /var/www/html
+  cd /var/www/html || exit
 fi
 
 if [ "$chapter" -ge 2 ]; then
