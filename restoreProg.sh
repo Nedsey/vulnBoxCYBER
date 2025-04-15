@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Base64-encoded teacher passwords
 pass1="ZmlyZQ=="
 pass2="bW9vbg=="
 pass3="dHJlZQ=="
