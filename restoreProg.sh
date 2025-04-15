@@ -1,5 +1,13 @@
 #!/bin/bash
 
+declare -A CODES
+CODES[1]="dare"
+CODES[2]="quiz"
+CODES[3]="hazy"
+CODES[4]="yuzu"
+CODES[5]="jaws"
+CODES[6]="puck"
+
 echo "Choose chapter to restore progress up to (1-6): "
 read CHAPTER
 
@@ -8,10 +16,18 @@ if [[ "$CHAPTER" -lt 1 || "$CHAPTER" -gt 6 ]]; then
   exit 1
 fi
 
-echo "[*] Starting Apache..."
-sudo systemctl start apache2
+echo -n "Enter teacher code for Chapter $CHAPTER: "
+read -s INPUT_CODE
+echo
 
-echo "[*] Navigating to web root..."
+if [[ "${CODES[$CHAPTER]}" != "$INPUT_CODE" ]]; then
+  echo "❌ Incorrect code. Access denied for Chapter $CHAPTER."
+  exit 1
+fi
+
+echo "✅ Code accepted. Restoring Chapter $CHAPTER..."
+
+sudo systemctl start apache2
 cd /var/www/html || exit
 
 if [[ $CHAPTER -ge 1 ]]; then
@@ -90,4 +106,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 EOF
 fi
 
-echo "[✓] Progress restored up to Chapter $CHAPTER."
+echo "[✓] Chapter $CHAPTER restored successfully."
